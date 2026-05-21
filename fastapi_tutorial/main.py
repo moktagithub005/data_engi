@@ -1,35 +1,50 @@
-from fastapi import FastAPI
-#create the fastapi app
-app=FastAPI()
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
-#route 1: home endpoint
+app = FastAPI()
 
+# In-memory student storage
+students = [
+    {"id": 1, "name": "nikita", "city": "sundernagar"},
+    {"id": 2, "name": "saurabh", "city": "solan"},
+    {"id": 3, "name": "palak", "city": "Hamirpur"},
+]
+
+class Student(BaseModel):
+    id: int
+    name: str
+    city: str
+
+# GET /
 @app.get("/")
 def home():
-    return{"mesage":"welcome to my  forst api"}
+    return {"message": "Welcome to my first API"}
 
-
+# GET /students
 @app.get("/students")
 def get_students():
-    students =[
-      {"id":1, "name": "nikita", "city":"sundernagar"},
-      {"id":2, "name": "saurabh", "city":"solan"},
-      {"id":3, "name": "palak", "city":"Hamirpur"},
-    ]
+    return {"total": len(students), "students": students}
 
-    return {"total": len(students), "students":students}
-
-#route:  client sends data to us : POST
+# POST /students  → add one student
 @app.post("/students")
-def create_students():
-    return {"message": "A new student was created"}
+def create_student(student: Student):
+    students.append(student.model_dump())
+    return {"message": "Student created", "student": student}
 
-# route PUT: client want to update something 
-@app.put("/students")
-def update_students():
-    return{"message": "A student was updated "}
+# PUT /students/{student_id}  → update one student
+@app.put("/students/{student_id}")
+def update_student(student_id: int, updated: Student):
+    for i, s in enumerate(students):
+        if s["id"] == student_id:
+            students[i] = updated.model_dump()
+            return {"message": "Student updated", "student": updated}
+    raise HTTPException(status_code=404, detail="Student not found")
 
-# route DELETE - client wants to  delete data
-@app.delete("/students")
-def delete_students():
-    return{"message": "a student was deleted"}
+# DELETE /students/{student_id}  → delete one student
+@app.delete("/students/{student_id}")
+def delete_student(student_id: int):
+    for i, s in enumerate(students):
+        if s["id"] == student_id:
+            removed = students.pop(i)
+            return {"message": "Student deleted", "student": removed}
+    raise HTTPException(status_code=404, detail="Student not found")
