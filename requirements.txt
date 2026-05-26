@@ -6,3 +6,4 @@ numpy
 pandas
 duckdb
 mysql-connector-python
+pymysql
