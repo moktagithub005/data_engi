@@ -76,7 +76,7 @@ duck_conn.execute("""
 ##VERIFY CLOUD DATA
 result = duck_conn.execute("""
     SELECT COUNT(*)
-    FROM online_retail
+    FROM olap_reatil
 """).fetchall()
 
 print(result)
