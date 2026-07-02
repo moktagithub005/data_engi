@@ -1,17 +1,25 @@
-import json
 import time
 import logging
-from weather_service import get_weather_event
-from kafka_producer import(
-    publish_and_confirmation,
-    close
+
+
+
+from producer.weather_service import get_weather_event
+
+from producer.kafka_producer import (
+    publish_and_confirm,
+    close,
 )
 
 def run_weather_producer():
+    print(" run_weather_producer() started")
     while True:
+        print("Inside while loop")
         try:
+            print("Calling get_weather_event()")
             event=get_weather_event()
-            metadata=publish_and_confirmation(
+            print("Weather Event Created Successfully")
+            print(event)
+            metadata=publish_and_confirm(
                 event,
                 key=event["city"]
             )
@@ -29,5 +37,23 @@ Offset: {metadata.offset}
             )
         finally:
             time.sleep(30)
+
+if __name__ == "__main__":
+
+    try:
+
+        run_weather_producer()
+
+    except KeyboardInterrupt:
+
+        logging.info(
+
+            "Producer Stopped by User."
+        )
+
+    finally:
+
+        close()
+
         
 

@@ -19,11 +19,24 @@ def build_weather_url():
 
 import requests
 def fetch_weather_data():
-    url=build_weather_url()
-    response=requests.get(url)
+
+    print("1. Building URL")
+
+    url = build_weather_url()
+
+    print(url)
+
+    print("2. Calling Weather API...")
+
+    response = requests.get(url)
+
+    print("3. Weather API Responded")
+
     response.raise_for_status()
+
+    print("4. Returning JSON")
+
     return response.json()
-    ## json.dumps(value): we are converting our python ob into json
 
 ## create weather event function
 from datetime import datetime
