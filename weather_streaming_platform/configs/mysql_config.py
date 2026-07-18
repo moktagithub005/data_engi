@@ -2,9 +2,11 @@
 
 MYSQL_HOST = "localhost"
 
-MYSQL_USER = "root"
-
-MYSQL_PASSWORD = "root"
+MYSQL_PORT = 3306
 
 MYSQL_DATABASE = "weather_db"
+
+MYSQL_USERNAME = "root"
+
+MYSQL_PASSWORD = "@MacMYSQL005"
 
