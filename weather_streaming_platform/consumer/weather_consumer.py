@@ -4,6 +4,7 @@ from configs.kafka_config import (
     BOOTSTRAP_SERVER,
     RAW_TOPIC
 )
+from database.weather_repository import insert_weather_event
 
 #create kafka consumer 
 consumer=KafkaConsumer(
@@ -23,6 +24,7 @@ try:
         print(f"ofset : {message.offset}")
         print(f"key: {message.key}")
         print(f"value: {message.value}")
+        insert_weather_event(message.value)
 except KeyboardInterrupt:
     print("consumer stpped by user")
 finally:
