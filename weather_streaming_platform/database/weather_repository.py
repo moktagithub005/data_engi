@@ -19,7 +19,7 @@ def insert_weather_event(event):
     Inserts one weather event into the weather_readings table.
 
     Parameters:
-    
+
     event : dict
 
     Example:
@@ -86,3 +86,68 @@ def insert_weather_event(event):
         connection.rollback()
 
         logging.error(f"Database Error : {e}")
+
+def get_all_weather():
+    """
+    fetch all waether records 
+    from the database
+    """
+    try:
+        query="""
+        SELECT *
+        FROM weather_readings
+        ORDER BY event_time DESC
+        """
+        cursor.execute(query)
+        records=cursor.fetchall()
+        return records
+    except Exception as e:
+        logging.error(
+            f"Database Read Error: {e}"
+        )
+        return []
+    
+def get_latest_weather():
+
+    """
+    Fetch the latest weather record
+    for every district.
+    """
+
+    try:
+
+        query = """
+        SELECT wr.*
+        FROM weather_readings wr
+        INNER JOIN (
+
+            SELECT
+                city,
+                MAX(event_time) AS latest_time
+
+            FROM weather_readings
+
+            GROUP BY city
+
+        ) latest
+
+        ON wr.city = latest.city
+
+        AND wr.event_time = latest.latest_time
+
+        ORDER BY wr.city;
+        """
+
+        cursor.execute(query)
+
+        records = cursor.fetchall()
+
+        return records
+
+    except Exception as e:
+
+        logging.error(
+            f"Database Read Error : {e}"
+        )
+
+        return []
